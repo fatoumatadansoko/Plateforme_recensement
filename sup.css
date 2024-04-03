@@ -1,0 +1,39 @@
+/* Styles spécifiques pour la page de suppression de membre */
+.confirmation-message {
+    color: #dc3545; /* Couleur rouge pour le message de confirmation */
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+.confirmation-form {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 5px;
+    margin-top: 20px;
+}
+
+.confirmation-form input[type="submit"],
+.confirmation-form input[type="button"] {
+    padding: 10px 20px;
+    margin-right: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    cursor: pointer;
+}
+
+.confirmation-form input[type="submit"] {
+    background-color: #dc3545; /* Couleur rouge pour le bouton de confirmation */
+    color: #fff;
+}
+
+.confirmation-form input[type="submit"]:hover,
+.confirmation-form input[type="button"]:hover {
+    opacity: 0.8;
+}
+
+.confirmation-form input[type="button"] {
+    background-color: #fff;
+    border: 1px solid #dc3545; /* Couleur rouge pour le bouton d'annulation */
+    color: #dc3545;
+}
+
