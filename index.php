@@ -1,5 +1,5 @@
 <?php
-// Inclure les fichiers PHP nécessaires
+// Inclure les fichiers PHP nécessaire
 require_once 'Membre.php'; // Fichier contenant la classe Membre et ses méthodes
 
 // Instancier un objet de la classe Membre pour gérer les membres
