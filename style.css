@@ -75,3 +75,17 @@ th {
 .btn-primary:hover, .btn-danger:hover {
     opacity: 0.8;
 }
+.return-link {
+    display: inline-block;
+    margin-top: 30px;
+    padding: 10px 20px;
+    background-color: #007bff; /* Utilisation du bleu pour le bouton de retour */
+    color: #fff;
+    text-decoration: none;
+    font-weight: bold; /* Mettre en gras le texte du bouton */
+    border-radius: 5px;
+    transition: background-color 0.3s ease; /* Transition pour un effet de survol */
+}
+.return-link:hover {
+    background-color: #0056b3; /* Nuance plus foncée du bleu pour l'effet de survol */
+}

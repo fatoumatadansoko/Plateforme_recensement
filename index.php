@@ -18,13 +18,32 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $sexe = $_POST['sexe'];
         $situationMatrimoniale = $_POST['situationMatrimoniale'];
         $statut = $_POST['statut'];
+        
+        // Définir les variables d'âge minimum et maximum en fonction de la tranche d'âge sélectionnée
+        if ($trancheAge == "0-17") {
+            $ageMin = 0;
+            $ageMax = 17;
+        } elseif ($trancheAge == "18-35") {
+            $ageMin = 18;
+            $ageMax = 35;
+        } elseif ($trancheAge == "50- +") {
+            $ageMin = 50;
+            $ageMax = 100; // Utilisation d'une valeur maximale arbitraire, ajustez selon vos besoins
+        }
 
-        $membre = new Membre();
+        // Définir la désignation en fonction du statut sélectionné (ceci est un exemple, ajustez selon vos besoins)
+        if ($statut == "Civil") {
+            $designation = "Civil";
+        } elseif ($statut == "Chef de quartier") {
+            $designation = "Chef de quartier";
+        } elseif ($statut == "Badiène Gokh") {
+            $designation = "Badiène Gokh";
+        }
+
         // Ajouter le nouveau membre
-        $membre->ajouterMembre($nom, $prenom, $adresse, $telephone, $ageMin, $ageMax, $sexe, $situationMatrimoniale, $libelleStatut);
+        $membre->ajouterMembre($nom, $prenom, $adresse, $telephone, $ageMin, $ageMax, $sexe, $situationMatrimoniale, $designation);
     }
 }
-
 
 // Récupérer la liste des membres
 $listeMembres = $membre->listerMembres();
@@ -56,14 +75,14 @@ $listeMembres = $membre->listerMembres();
         <div class="form-group col-lg-2">
             <label for="trancheage">Tranche d'Âge :</label>
             <select name="trancheage" id="trancheage" class="form-control" required>
-            <option value="">Sélectionner tranche age</option>
-            <option value="">Enfant</option>
-            <option value="">Adulte</option>
-            <option value="">Personne Agé</option>
+            <option>Sélectionner tranche age</option>
+            <option value="0-17">Enfant</option>
+            <option value="18-35">Adulte</option>
+            <option value="50- +">Personne Agé</option>
             </select>
         </div><br><br>
         <div class="form-group col-lg-2">
-                        <label for="">Sexe</label>
+                        <label for="">Sexe :</label>
                         <select name="sexe" id="sexe" class="form-control" required>
                             <option value="">Sélectionner un sexe</option>
                             <option value="Homme">Homme</option>
@@ -72,7 +91,7 @@ $listeMembres = $membre->listerMembres();
         </div><br><br>
        <!-- Champ pour la situation matrimoniale de l'habitant -->
        <div class="form-group col-lg-3">
-                        <label for="">Situation matrimoniale</label>
+                        <label for="">Situation matrimoniale :</label>
                         <select name="situationMatrimoniale" id="situationMatrimoniale" class="form-control" required>
                             <option value="">Sélectionner une situation matrimoniale</option>
                             <option value="Célibataire">Célibataire</option>
@@ -83,12 +102,12 @@ $listeMembres = $membre->listerMembres();
       </div><br><br>
         <!-- Champ pour le statut de l'habitant -->
         <div class="form-group col-lg-2">
-            <label for="">Statut</label>
+            <label for="">Statut :</label>
             <select name="statut" id="statut" class="form-control" required>
             <option value="">Sélectionner un statut</option>
-            <option value="">Civil</option>
-            <option value="">Chef de quartier</option>
-            <option value="">Badiène Gokh</option>
+            <option value="Civil">Civil</option>
+            <option value="Chef de quartier">Chef de quartier</option>
+            <option value="Badiène Gokh">Badiène Gokh</option>
             </select>
         </div><br><br>
         <input type="submit" name="ajouterMembre" value="Ajouter Membre">
@@ -103,21 +122,18 @@ $listeMembres = $membre->listerMembres();
             <th>Prénom</th>
             <th>Adresse</th>
             <th>Téléphone</th>
-            <th>Tranche d'Âge</th>
-            <th>Sexe</th>
-            <th>Situation Matrimoniale</th>
-            <th>Statut</th>
+            
         </tr>
         <?php foreach ($listeMembres as $membre) { ?>
             <tr>
-                <td><?php echo $membre['nom']; ?></td>
-                <td><?php echo $membre['prenom']; ?></td>
-                <td><?php echo $membre['adresse']; ?></td>
-                <td><?php echo $membre['telephone']; ?></td>
-                <td><?php echo $membre['id_trancheage']; ?></td>
-                <td><?php echo $membre['sexe']; ?></td>
-                <td><?php echo $membre['situationMatrimoniale']; ?></td>
-                <td><?php echo $membre['id_statut']; ?></td>
+            <td><?php echo $membre['nom']; ?></td>
+            <td><?php echo $membre['prenom']; ?></td>
+            <td><?php echo $membre['adresse']; ?></td>
+            <td><?php echo $membre['telephone']; ?></td>
+            
+            
+                <!-- Bouton pour voir les détails du membre avec un lien vers details_membres.php -->
+                <td><a href="details_membres.php?id=<?php echo $membre['id']; ?>" class="btn btn-primary">Détails</a></td>
                 <!-- Bouton pour éditer les données avec un lien vers updatedata.php -->
                 <td><a href="modifier_membre.php?id=<?php echo $membre['id']; ?>" class="btn btn-primary">Modifier</a></td>
                 <!-- Bouton pour supprimer les données avec un lien vers deletedata.php -->

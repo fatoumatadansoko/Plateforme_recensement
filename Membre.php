@@ -21,10 +21,10 @@ class Membre {
     }
 
     // Méthode pour ajouter un nouveau membre
-    public function ajouterMembre($nom, $prenom, $adresse, $telephone, $ageMin, $ageMax, $sexe, $situationMatrimoniale, $libelleStatut) {
+    public function ajouterMembre($nom, $prenom, $adresse, $telephone, $ageMin, $ageMax, $sexe, $situationMatrimoniale, $designation) {
         try {
             // Vérifier si la tranche d'âge existe déjà
-            $requeteCheckTrancheAge = $this->connexion->prepare("SELECT id FROM trancheAge WHERE age_min = ? AND age_max = ?");
+            $requeteCheckTrancheAge = $this->connexion->prepare("SELECT id FROM trancheage WHERE age_min = ? AND age_max = ?");
             $requeteCheckTrancheAge->execute([$ageMin, $ageMax]);
             $resultatCheckTrancheAge = $requeteCheckTrancheAge->fetch(PDO::FETCH_ASSOC);
     
@@ -32,22 +32,22 @@ class Membre {
                 $idTrancheAge = $resultatCheckTrancheAge['id'];
             } else {
                 // Si la tranche d'âge n'existe pas, l'ajouter à la table 'trancheAge'
-                $requeteAjouterTrancheAge = $this->connexion->prepare("INSERT INTO trancheAge (age_min, age_max) VALUES (?, ?)");
+                $requeteAjouterTrancheAge = $this->connexion->prepare("INSERT INTO trancheage (age_min, age_max) VALUES (?, ?)");
                 $requeteAjouterTrancheAge->execute([$ageMin, $ageMax]);
                 $idTrancheAge = $this->connexion->lastInsertId();
             }
     
             // Vérifier si le statut existe déjà
-            $requeteCheckStatut = $this->connexion->prepare("SELECT id FROM statut WHERE libelle = ?");
-            $requeteCheckStatut->execute([$libelleStatut]);
+            $requeteCheckStatut = $this->connexion->prepare("SELECT id FROM statut WHERE designation = ?");
+            $requeteCheckStatut->execute([$designation]);
             $resultatCheckStatut = $requeteCheckStatut->fetch(PDO::FETCH_ASSOC);
     
             if ($resultatCheckStatut) {
                 $idStatut = $resultatCheckStatut['id'];
             } else {
                 // Si le statut n'existe pas, l'ajouter à la table 'statut'
-                $requeteAjouterStatut = $this->connexion->prepare("INSERT INTO statut (libelle) VALUES (?)");
-                $requeteAjouterStatut->execute([$libelleStatut]);
+                $requeteAjouterStatut = $this->connexion->prepare("INSERT INTO statut (designation) VALUES (?)");
+                $requeteAjouterStatut->execute([$designation]);
                 $idStatut = $this->connexion->lastInsertId();
             }
     
@@ -55,7 +55,6 @@ class Membre {
             $requete = $this->connexion->prepare("INSERT INTO membres (nom, prenom, adresse, telephone, id_trancheage, sexe, situationMatrimoniale, id_statut) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
             $requete->execute([$nom, $prenom, $adresse, $telephone, $idTrancheAge, $sexe, $situationMatrimoniale, $idStatut]);
             
-            echo "Membre ajouté avec succès.";
         } catch(PDOException $e) {
             echo "Erreur lors de l'ajout du membre : " . $e->getMessage();
         }
@@ -65,12 +64,13 @@ class Membre {
 
     // Méthode pour récupérer la liste des membres
     public function listerMembres() {
-        $requete = $this->connexion->query("SELECT membres.id, membres.nom, membres.prenom, membres.adresse, membres.telephone, membres.situationMatrimoniale, statut.id AS id_statut, membres.sexe, trancheage.id AS id_trancheage 
+        $requete = $this->connexion->query("SELECT membres.id, membres.nom, membres.prenom, membres.adresse, membres.telephone, membres.situationMatrimoniale, statut.designation AS statut_designation, trancheage.age_min, trancheage.age_max, membres.sexe 
         FROM membres
         LEFT JOIN statut ON membres.id_statut = statut.id 
         LEFT JOIN trancheage ON membres.id_trancheage = trancheage.id");
         return $requete->fetchAll(PDO::FETCH_ASSOC);
     }
+    
     
 
     // Méthode pour récupérer les informations d'un membre spécifique
