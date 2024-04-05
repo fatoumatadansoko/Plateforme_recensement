@@ -1,7 +1,10 @@
 <?php
 require_once 'config.php';
+require_once 'ValidationTrait.php';
+
 class Membre {
     private $connexion;
+    use ValidationTrait;
 
     
     // Constructeur pour initialiser la connexion à la base de données
@@ -23,6 +26,14 @@ class Membre {
     // Méthode pour ajouter un nouveau membre
     public function ajouterMembre($nom, $prenom, $adresse, $telephone, $ageMin, $ageMax, $sexe, $situationMatrimoniale, $designation) {
         try {
+            // Validation des champs nom et prénom
+            if (!$this->validateNom($nom) || !$this->validatePrenom($prenom)) {
+                throw new Exception("Le nom ou le prénom est invalide.");
+            }
+    
+            // Génération du matricule
+            $matricule = "PO__" . uniqid();
+    
             // Vérifier si la tranche d'âge existe déjà
             $requeteCheckTrancheAge = $this->connexion->prepare("SELECT id FROM trancheage WHERE age_min = ? AND age_max = ?");
             $requeteCheckTrancheAge->execute([$ageMin, $ageMax]);
@@ -52,19 +63,24 @@ class Membre {
             }
     
             // Insérer le membre avec l'ID de la tranche d'âge et du statut
-            $requete = $this->connexion->prepare("INSERT INTO membres (nom, prenom, adresse, telephone, id_trancheage, sexe, situationMatrimoniale, id_statut) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
-            $requete->execute([$nom, $prenom, $adresse, $telephone, $idTrancheAge, $sexe, $situationMatrimoniale, $idStatut]);
-            
+            $requete = $this->connexion->prepare("INSERT INTO membres (matricule, nom, prenom, adresse, telephone, id_trancheage, sexe, situationMatrimoniale, id_statut) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
+            $requete->execute([$matricule, $nom, $prenom, $adresse, $telephone, $idTrancheAge, $sexe, $situationMatrimoniale, $idStatut]);
+    
+            echo "Membre ajouté avec succès.\n";
+    
         } catch(PDOException $e) {
+            echo "Erreur lors de l'ajout du membre : " . $e->getMessage();
+        } catch(Exception $e) {
             echo "Erreur lors de l'ajout du membre : " . $e->getMessage();
         }
     }
+    
     
       
 
     // Méthode pour récupérer la liste des membres
     public function listerMembres() {
-        $requete = $this->connexion->query("SELECT membres.id, membres.nom, membres.prenom, membres.adresse, membres.telephone, membres.situationMatrimoniale, statut.designation AS statut_designation, trancheage.age_min, trancheage.age_max, membres.sexe 
+        $requete = $this->connexion->query("SELECT membres.matricule, membres.id, membres.nom, membres.prenom, membres.adresse, membres.telephone, membres.situationMatrimoniale, statut.designation AS statut_designation, trancheage.age_min, trancheage.age_max, membres.sexe 
         FROM membres
         LEFT JOIN statut ON membres.id_statut = statut.id 
         LEFT JOIN trancheage ON membres.id_trancheage = trancheage.id");

@@ -25,6 +25,7 @@ $listeMembres = $membre->listerMembres();
     <br>
     <table>
         <tr>
+            <th>Matricule</th>
             <th>Nom</th>
             <th>Prénom</th>
             <th>Adresse</th>
@@ -33,9 +34,13 @@ $listeMembres = $membre->listerMembres();
             <th>Sexe</th>
             <th>Situation Matrimoniale</th>
             <th>Statut</th>
+            <th>Options</th>
+            <th>Options</th>
+            <th>Options</th>
         </tr>
         <?php foreach ($listeMembres as $membre) { ?>
             <tr>
+            <td><?php echo $membre['matricule']; ?></td>
             <td><?php echo $membre['nom']; ?></td>
             <td><?php echo $membre['prenom']; ?></td>
             <td><?php echo $membre['adresse']; ?></td>

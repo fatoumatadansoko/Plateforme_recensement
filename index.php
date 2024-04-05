@@ -78,7 +78,7 @@ $listeMembres = $membre->listerMembres();
             <option>Sélectionner tranche age</option>
             <option value="0-17">Enfant</option>
             <option value="18-35">Adulte</option>
-            <option value="50- +">Personne Agé</option>
+            <option value="50- +">Personne Age</option>
             </select>
         </div><br><br>
         <div class="form-group col-lg-2">
@@ -94,9 +94,9 @@ $listeMembres = $membre->listerMembres();
                         <label for="">Situation matrimoniale :</label>
                         <select name="situationMatrimoniale" id="situationMatrimoniale" class="form-control" required>
                             <option value="">Sélectionner une situation matrimoniale</option>
-                            <option value="Célibataire">Célibataire</option>
-                            <option value="Marié(e)">Marié(e)</option>
-                            <option value="Divorcé(e)">Divorcé(e)</option>
+                            <option value="Célibataire">Celibataire</option>
+                            <option value="Marié(e)">Marie(e)</option>
+                            <option value="Divorcé(e)">Divorce(e)</option>
                             <option value="Veuf/Veuve">Veuf/Veuve</option>
                         </select>
       </div><br><br>
@@ -107,7 +107,7 @@ $listeMembres = $membre->listerMembres();
             <option value="">Sélectionner un statut</option>
             <option value="Civil">Civil</option>
             <option value="Chef de quartier">Chef de quartier</option>
-            <option value="Badiène Gokh">Badiène Gokh</option>
+            <option value="Badiène Gokh">Badiene Gokh</option>
             </select>
         </div><br><br>
         <input type="submit" name="ajouterMembre" value="Ajouter Membre">
@@ -118,14 +118,19 @@ $listeMembres = $membre->listerMembres();
     <br>
     <table>
         <tr>
+            <th>Matricule</th>
             <th>Nom</th>
             <th>Prénom</th>
             <th>Adresse</th>
             <th>Téléphone</th>
+            <th></th>
+            <th></th>
+            <th></th>
             
         </tr>
         <?php foreach ($listeMembres as $membre) { ?>
             <tr>
+            <td><?php echo $membre['matricule']; ?></td>
             <td><?php echo $membre['nom']; ?></td>
             <td><?php echo $membre['prenom']; ?></td>
             <td><?php echo $membre['adresse']; ?></td>
