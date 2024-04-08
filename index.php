@@ -28,10 +28,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $ageMax = 35;
         } elseif ($trancheAge == "50- +") {
             $ageMin = 50;
-            $ageMax = 100; // Utilisation d'une valeur maximale arbitraire, ajustez selon vos besoins
+            $ageMax = 100; // Utilisation d'une valeur maximale arbitraire, ajustez selon mes besoins
         }
 
-        // Définir la désignation en fonction du statut sélectionné (ceci est un exemple, ajustez selon vos besoins)
+        // Définir la désignation en fonction du statut sélectionné (ceci est un exemple, ajustez selon mes besoins)
         if ($statut == "Civil") {
             $designation = "Civil";
         } elseif ($statut == "Chef de quartier") {
@@ -78,7 +78,7 @@ $listeMembres = $membre->listerMembres();
             <option>Sélectionner tranche age</option>
             <option value="0-17">Enfant</option>
             <option value="18-35">Adulte</option>
-            <option value="50- +">Personne Age</option>
+            <option value="50- 100">Personne Age</option>
             </select>
         </div><br><br>
         <div class="form-group col-lg-2">
@@ -124,7 +124,7 @@ $listeMembres = $membre->listerMembres();
             <th>Adresse</th>
             <th>Téléphone</th>
             <th></th>
-            <th></th>
+            <th>Options</th>
             <th></th>
             
         </tr>

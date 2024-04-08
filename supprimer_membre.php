@@ -33,7 +33,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 }
 
 // Récupérer les informations du membre à partir de l'identifiant
-$infoMembre = $membre->getMembre($idMembre);
+$infoMembre = $membre->getDetailsMembre($idMembre);
 ?>
 
 <!DOCTYPE html>

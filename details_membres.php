@@ -1,28 +1,44 @@
 <?php
-// Inclure les fichiers PHP nécessaire
-require_once 'Membre.php'; // Fichier contenant la classe Membre et ses méthodes
+// Assurez-vous que l'identifiant du membre à afficher est spécifié dans l'URL
+if (!isset($_GET['id']) || empty($_GET['id'])) {
+    // Rediriger vers la page principale si l'identifiant est manquant
+    header("Location: index.php");
+    exit;
+}
+
+// Inclure le fichier PHP contenant la classe Membre et ses méthodes
+require_once 'Membre.php';
 
 // Instancier un objet de la classe Membre pour gérer les membres
 $membre = new Membre();
 
-// Récupérer la liste des membres
-$listeMembres = $membre->listerMembres();
+// Récupérer l'identifiant du membre à afficher à partir de l'URL
+$idMembre = $_GET['id'];
+
+// Récupérer les détails du membre spécifique
+$detailsMembre = $membre->getDetailsMembre($idMembre);
+
+// Vérifier si le membre existe
+if (!$detailsMembre) {
+    // Rediriger vers la page principale si le membre n'existe pas
+    header("Location: index.php");
+    exit;
+}
 ?>
 
 <!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>Système de Gestion des Membres</title>
+    <title>Détails du Membre</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
- 
+
 <a href="index.php" class="return-link">Retour à la Liste des Membres</a>
 
-    <!-- Liste des membres -->
-    <h2>Liste des Membres</h2>
-    <br>
+    <h2>Détails du Membre</h2>
+    <br><br>
     <table>
         <tr>
             <th>Matricule</th>
@@ -34,30 +50,19 @@ $listeMembres = $membre->listerMembres();
             <th>Sexe</th>
             <th>Situation Matrimoniale</th>
             <th>Statut</th>
-            <th>Options</th>
-            <th>Options</th>
-            <th>Options</th>
         </tr>
-        <?php foreach ($listeMembres as $membre) { ?>
-            <tr>
-            <td><?php echo $membre['matricule']; ?></td>
-            <td><?php echo $membre['nom']; ?></td>
-            <td><?php echo $membre['prenom']; ?></td>
-            <td><?php echo $membre['adresse']; ?></td>
-            <td><?php echo $membre['telephone']; ?></td>
+        <tr>
+            <td><?php echo $detailsMembre['matricule']; ?></td>
+            <td><?php echo $detailsMembre['nom']; ?></td>
+            <td><?php echo $detailsMembre['prenom']; ?></td>
+            <td><?php echo $detailsMembre['adresse']; ?></td>
+            <td><?php echo $detailsMembre['telephone']; ?></td>
             <!-- Displaying age range -->
-            <td><?php echo $membre['age_min'] . " - " . $membre['age_max']; ?></td>
-            <td><?php echo $membre['sexe']; ?></td>
-            <td><?php echo $membre['situationMatrimoniale']; ?></td>
-            <td><?php echo $membre['statut_designation']; ?></td>
-                <!-- Bouton pour voir les détails du membre avec un lien vers details_membres.php -->
-                <td><a href="details_membres.php?id=<?php echo $membre['id']; ?>" class="btn btn-primary">Détails</a></td>
-                <!-- Bouton pour éditer les données avec un lien vers updatedata.php -->
-                <td><a href="modifier_membre.php?id=<?php echo $membre['id']; ?>" class="btn btn-primary">Modifier</a></td>
-                <!-- Bouton pour supprimer les données avec un lien vers deletedata.php -->
-                <td><a href="supprimer_membre.php?id=<?php echo $membre['id']; ?>" class="btn btn-danger">Supprimer</a></td>
-            </tr>
-        <?php } ?>
+            <td><?php echo $detailsMembre['age_min'] . " - " . $detailsMembre['age_max']; ?></td>
+            <td><?php echo $detailsMembre['sexe']; ?></td>
+            <td><?php echo $detailsMembre['situationMatrimoniale']; ?></td>
+            <td><?php echo $detailsMembre['designation']; ?></td>
+        </tr>
     </table>
 
 </body>

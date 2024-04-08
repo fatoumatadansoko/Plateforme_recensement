@@ -31,7 +31,7 @@ class Membre {
                 throw new Exception("Le nom ou le prénom est invalide.");
             }
     
-            // Génération du matricule
+            // Génération du matricule 
             $matricule = "PO__" . uniqid();
     
             // Vérifier si la tranche d'âge existe déjà
@@ -90,17 +90,37 @@ class Membre {
     
 
     // Méthode pour récupérer les informations d'un membre spécifique
-    public function getMembre($id) {
-        $requete = $this->connexion->prepare("SELECT * FROM membres WHERE id = ?");
-        $requete->execute([$id]);
+   
+    public function getDetailsMembre($idMembre) {
+        $requete = $this->connexion->prepare("SELECT m.id, m.matricule, m.nom, m.prenom, m.adresse, m.telephone, t.age_min, t.age_max, m.sexe, m.situationMatrimoniale, s.designation 
+            FROM membres m
+            INNER JOIN trancheage t ON m.id_trancheage = t.id
+            INNER JOIN statut s ON m.id_statut = s.id
+            WHERE m.id = ?");
+        $requete->execute([$idMembre]);
         return $requete->fetch(PDO::FETCH_ASSOC);
     }
+    
+
 
     // Méthode pour modifier les informations d'un membre
-    public function modifierMembre($id, $nom, $prenom, $adresse, $telephone, $trancheAge, $sexe, $situationMatrimoniale, $statut) {
-        $requete = $this->connexion->prepare("UPDATE membres SET nom = ?, prenom = ?, adresse = ?, telephone = ?, trancheAge = ?, sexe = ?, situationMatrimoniale = ?, statut = ? WHERE id = ?");
-        $requete->execute([$nom, $prenom, $adresse, $telephone, $trancheAge, $sexe, $situationMatrimoniale, $statut, $id]);
+    public function modifierMembre($id, $nom, $prenom, $adresse, $telephone, $ageMin, $ageMax, $sexe, $situationMatrimoniale, $designation) {
+        try {
+            $requete = $this->connexion->prepare("UPDATE membres m
+                                                  INNER JOIN trancheage t ON m.id_trancheage = t.id
+                                                  INNER JOIN statut s ON m.id_statut = s.id
+                                                  SET m.nom = ?, m.prenom = ?, m.adresse = ?, m.telephone = ?, t.age_min = ?, t.age_max = ?, m.sexe = ?, m.situationMatrimoniale = ?, s.designation = ?
+                                                  WHERE m.id = ?");
+            $requete->execute([$nom, $prenom, $adresse, $telephone, $ageMin, $ageMax, $sexe, $situationMatrimoniale, $designation, $id]);
+            
+            echo "Membre modifié avec succès.\n";
+    
+        } catch(PDOException $e) {
+            echo "Erreur lors de la modification du membre : " . $e->getMessage();
+        }
     }
+    
+    
 
     // Méthode pour supprimer un membre
     public function supprimerMembre($id) {

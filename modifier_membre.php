@@ -9,29 +9,37 @@ if (!isset($_GET['id']) || empty($_GET['id'])) {
     exit;
 }
 
+// Récupérer l'identifiant du membre à modifier
+$id = $_GET['id'];
+
 // Instancier un objet de la classe Membre pour gérer les membres
 $membre = new Membre();
 
-// Récupérer l'identifiant du membre à modifier
-$idMembre = $_GET['id'];
-
 // Récupérer les informations du membre à modifier
-$infoMembre = $membre->getMembre($idMembre);
+$infoMembre = $membre->getDetailsMembre($id);
+
+// Vérifier si les informations du membre ont été récupérées avec succès
+if (!$infoMembre) {
+    // Rediriger vers la page principale si les informations du membre sont introuvables
+    header("Location: index.php");
+    exit;
+}
 
 // Traitement des données du formulaire de modification
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Récupérer les données du formulaire
+    // Récupérer les données du formulaire de modification
     $nom = $_POST['nom'];
     $prenom = $_POST['prenom'];
     $adresse = $_POST['adresse'];
     $telephone = $_POST['telephone'];
-    $trancheAge = $_POST['trancheAge'];
+    $trancheAge = $_POST['trancheage'];
     $sexe = $_POST['sexe'];
     $situationMatrimoniale = $_POST['situationMatrimoniale'];
     $statut = $_POST['statut'];
-
+    
     // Modifier les informations du membre
-    $membre->modifierMembre($idMembre, $nom, $prenom, $adresse, $telephone, $trancheAge, $sexe, $situationMatrimoniale, $statut);
+    $membre->modifierMembre($id, $nom, $prenom, $adresse, $telephone, $ageMin, $ageMax, $sexe, $situationMatrimoniale, $designation);
+
 
     // Rediriger vers la page principale après la modification
     header("Location: index.php");
@@ -45,15 +53,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <meta charset="UTF-8">
     <title>Modifier Membre</title>
     <link rel="stylesheet" href="mod.css">
-
 </head>
 <body>
 <a href="index.php" class="return-link">Retour à la Liste des Membres</a>
 <br>
-    <h1>Modifier Membre</h1>
+<h1>Modifier Membre</h1>
 
-    <!-- Formulaire de modification de membre -->
-    <form class="modification-form" method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"] . "?id=" . $idMembre); ?>">
+<!-- Formulaire de modification de membre -->
+<form class="modification-form" method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"] . "?id=" . $id); ?>">
     <label for="nom">Nom :</label>
     <input type="text" id="nom" name="nom" value="<?php echo $infoMembre['nom']; ?>" required><br><br>
 
@@ -68,30 +75,30 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     <label for="trancheage">Tranche d'Âge :</label>
     <select id="trancheage" name="trancheage" required>
-        <option value="0-17">Enfant</option>
-        <option value="18-35">Adulte</option>
-        <option value="50- +">Personne Agée</option>
+        <option value="0-17" <?php if ($infoMembre['age_min'] == 0 && $infoMembre['age_max'] == 17) echo 'selected'; ?>>Enfant</option>
+        <option value="18-35" <?php if ($infoMembre['age_min'] == 18 && $infoMembre['age_max'] == 35) echo 'selected'; ?>>Adulte</option>
+        <option value="50- +" <?php if ($infoMembre['age_min'] == 50 && $infoMembre['age_max'] == 100) echo 'selected'; ?>>Personne Agée</option>
     </select><br><br>
 
     <label for="sexe">Sexe :</label>
     <select id="sexe" name="sexe" required>
-        <option value="Homme">Homme</option>
-        <option value="Femme">Femme</option>
+        <option value="Homme" <?php if ($infoMembre['sexe'] == 'Homme') echo 'selected'; ?>>Homme</option>
+        <option value="Femme" <?php if ($infoMembre['sexe'] == 'Femme') echo 'selected'; ?>>Femme</option>
     </select><br><br>
 
     <label for="situationMatrimoniale">Situation Matrimoniale :</label>
     <select id="situationMatrimoniale" name="situationMatrimoniale" required>
-        <option value="Célibataire">Célibataire</option>
-        <option value="Marié(e)">Marié(e)</option>
-        <option value="Divorcé(e)">Divorcé(e)</option>
-        <option value="Veuf/Veuve">Veuf/Veuve</option>
+        <option value="Célibataire" <?php if ($infoMembre['situationMatrimoniale'] == 'Célibataire') echo 'selected'; ?>>Célibataire</option>
+        <option value="Marié(e)" <?php if ($infoMembre['situationMatrimoniale'] == 'Marié(e)') echo 'selected'; ?>>Marié(e)</option>
+        <option value="Divorcé(e)" <?php if ($infoMembre['situationMatrimoniale'] == 'Divorcé(e)') echo 'selected'; ?>>Divorcé(e)</option>
+        <option value="Veuf/Veuve" <?php if ($infoMembre['situationMatrimoniale'] == 'Veuf/Veuve') echo 'selected'; ?>>Veuf/Veuve</option>
     </select><br><br>
 
     <label for="statut">Statut :</label>
     <select id="statut" name="statut" required>
-        <option value="Civil">Civil</option>
-        <option value="Chef de quartier">Chef de quartier</option>
-        <option value="Badiène Gokh">Badiène Gokh</option>
+        <option value="Civil" <?php if ($infoMembre['designation'] == 'Civil') echo 'selected'; ?>>Civil</option>
+        <option value="Chef de quartier" <?php if ($infoMembre['designation'] == 'Chef de quartier') echo 'selected'; ?>>Chef de quartier</option>
+        <option value="Badiène Gokh" <?php if ($infoMembre['designation'] == 'Badiène Gokh') echo 'selected'; ?>>Badiène Gokh</option>
     </select><br><br>
 
     <input type="submit" value="Modifier Membre">
